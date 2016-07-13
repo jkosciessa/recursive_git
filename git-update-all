@@ -4,9 +4,12 @@
 
 # from http://stackoverflow.com/a/17180894/51264
 
-# install as file 'git-update-all' into ~/bin/git/ and add ~/bin/git/ to your PATH
-# or simply execute the command below:
+# Install:
+# install as file 'git-update-all' into ~/bin/git/ and add ~/bin/git/ to your PATH or simply execute the command below:
 # mkdir -p ~/bin/git >/dev/null && curl -o ~/bin/git/git-update-all -fsSL https://gist.githubusercontent.com/eeichinger/1044107a1126901249b1164dac2fce15/raw/git-update-all && echo '\nNow ensure ~/bin/git is added to your path!'
+
+# Usage:
+# git update-all
 
 git_update_all() {
   local run currentBranch
