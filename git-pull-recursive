@@ -22,7 +22,7 @@ git_pull_recursive() {
       # 3. git pull on all tracking branches 
       # 4. pop back all changes
       # 5. open sourcetree
-      (pushd $dir; git add -A :/; git stash save before_pull; git remote update --prune; git pull-all; git stash pop before_pull 2>/dev/null; )
+      (pushd $dir; git add -A :/; git stash save before_pull; git remote update --prune; git pull-all; git stash pop before_pull 2>/dev/null; open -a SourceTree .; )
     fi
   done
 }
