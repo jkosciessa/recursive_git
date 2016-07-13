@@ -1,0 +1,31 @@
+#!/bin/sh
+#
+# Description:
+#   from the current folder, search recursively for local git repos and run git-pull-all on them 
+#
+# Install:
+#   install as file 'git-pull-recursive' into ~/bin/git/ and add ~/bin/git/ to your PATH or simply execute the command below:
+#   mkdir -p ~/bin/git >/dev/null && curl -o ~/bin/git/git-pull-recursive -fsSL https://gist.githubusercontent.com/eeichinger/1044107a1126901249b1164dac2fce15/raw/git-pull-recursive && echo '\nNow ensure ~/bin/git is added to your path!'
+#
+# Usage:
+#   git pull-recursive
+
+git_pull_recursive() {
+  local dir
+  for f in */.git/; do
+    if [[ -d "$f" && ! -L "$f" ]]; then
+				dir=$(dirname $f)
+        # $f is a git repo
+				echo ">>> Updating repository folder './$dir'"
+
+				# 1. stash away all changes
+				# 2. prune obsolete tracking branches
+				# 3. git pull on all tracking branches 
+				# 4. pop back all changes
+				# 5. open sourcetree
+				(pushd $dir; git add -A :/; git stash save before_pull; git remote update --prune; git pull-all; git stash pop before_pull 2>/dev/null; )
+    fi
+  done
+}
+
+git_pull_recursive "$@"
