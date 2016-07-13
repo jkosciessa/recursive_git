@@ -20,32 +20,30 @@
 # Usage:
 #   git pull-all [-n|--dryrun] [-s|--sourcetree]
 
-git_pull_all() {
-  local run currentBranch old_stash new_stash
+git_unpushed_all() {
+  local run currentBranch log res
 
   [[ "$1" = "-n" || "$1" = "--dryrun" ]] && shift && run=echo
-  [[ "$1" = "-s" || "$1" = "--sourcetree" ]] && shift && opensourcetree="open -a SourceTree ."
   
-  $run git remote update --prune;
-
   currentBranch=$(git name-rev --name-only HEAD 2>/dev/null)
-  
-  old_stash=$(git rev-parse -q --verify refs/stash); 
-  $run git stash save -q -u 'before pull'; 
-  new_stash=$(git rev-parse -q --verify refs/stash);
+
+  $run git fetch --all
   
   for x in $( git branch | cut -c3- ) ; do
-     echo ">>> Updating `pwd` git:($x)"
-     ($run git checkout $x && $run git pull --ff-only || return 2)
+#     echo ">>> Checking `pwd` git:($x)"
+     $run git checkout $x &>/dev/null
+     log=$(git --no-pager log origin/$x.. 2>/dev/null)
+     res=$?
+#    echo "res=${res}"		 
+#    echo "#log=${#log}"
+#    echo "$log"
+		 if [[ "$res" -eq 0 && "${#log}" -gt 0 ]]; then 
+			 echo ">>> Branch '$x' has unpublished updates:"
+			 echo "$log"
+		 fi
   done
 
-  [ ${#currentBranch} -gt 0 ] && $run git checkout "$currentBranch" >/dev/null
-  
-  if [ "$old_stash" != "$new_stash" ]; then 
-    $run git stash pop; 
-  fi
-  
-  $run $opensourcetree
+  [ ${#currentBranch} -gt 0 ] && $run git checkout "$currentBranch" >/dev/null 2>&1
 }
 
-git_pull_all "$@"
+git_unpushed_all "$@"

@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Description:
+#    execute git commands recursively in all repository folders
+#
+git_recursive() {	
+  local dir run
+
+  [[ "$1" = "-n" || "$1" = "--dryrun" ]] && shift && run=echo
+	
+  for f in */.git/; do
+    if [[ -d "$f" && ! -L "$f" ]]; then
+      dir=$(dirname $f)
+      echo ">>> Executing Repository folder './$dir'"
+      (pushd $dir 1>/dev/null && $run git "$@")
+      res=$?
+      if [ "$res" -gt 0 ] ; then
+        exit $res; 
+      fi
+    fi
+  done
+}
+
+git_recursive "$@"
