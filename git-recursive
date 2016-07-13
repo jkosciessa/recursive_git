@@ -3,6 +3,12 @@
 # Description:
 #    execute git commands recursively in all repository folders
 #
+# Usage:
+#    git recursive [-n|--dryrun] <git command>
+#
+# Example
+#   git recursive remote -v # prints remote info for each git repo
+#
 git_recursive() {	
   local dir run
 
@@ -12,7 +18,7 @@ git_recursive() {
     if [[ -d "$f" && ! -L "$f" ]]; then
       dir=$(dirname $f)
       echo ">>> Executing Repository folder './$dir'"
-      (pushd $dir 1>/dev/null && $run git "$@")
+      (pushd $dir 1>/dev/null; $run git "$@" || exit 2)
       res=$?
       if [ "$res" -gt 0 ] ; then
         exit $res; 

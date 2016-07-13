@@ -2,10 +2,7 @@
 #
 # Description:
 #   from the current working folder search recursively for local git repos and run 'git pull-all' on them. All arguments to 'git pull-recursive' are passed to 'git pull-all'
-#
-# Install:
-#   install as file 'git-pull-recursive' into ~/bin/git/ and add ~/bin/git/ to your PATH or simply execute the command below:
-#   mkdir -p ~/bin/git >/dev/null && curl -o ~/bin/git/git-pull-recursive -fsSL https://gist.githubusercontent.com/eeichinger/1044107a1126901249b1164dac2fce15/raw/git-pull-recursive && echo '\nNow ensure ~/bin/git is added to your path!'
+#   Basically a convenience shortcut for 'git recursive pull-all'
 #
 # Usage:
 #   git pull-recursive [args...]
@@ -16,7 +13,7 @@ git_pull_recursive() {
     if [[ -d "$f" && ! -L "$f" ]]; then
       dir=$(dirname $f)
       echo ">>> Updating repository folder './$dir'"
-      (pushd $dir; git pull-all "$@";)
+      (pushd $dir; git pull-all "$@" || exit 2)
     fi
   done
 }

@@ -11,11 +11,6 @@
 #   3. git pull on all tracking branches 
 #   4. pop back all changes
 #   5. open sourcetree      
-
-#
-# Install:
-#   install as file 'git-pull-all' into ~/bin/git/ and add ~/bin/git/ to your PATH or simply execute the command below:
-#   mkdir -p ~/bin/git >/dev/null && curl -o ~/bin/git/git-pull-all -fsSL https://gist.githubusercontent.com/eeichinger/1044107a1126901249b1164dac2fce15/raw/git-pull-all && echo '\nNow ensure ~/bin/git is added to your path!'
 #
 # Usage:
 #   git pull-all [-n|--dryrun] [-s|--sourcetree]
@@ -36,7 +31,7 @@ git_pull_all() {
   
   for x in $( git branch | cut -c3- ) ; do
      echo ">>> Updating `pwd` git:($x)"
-     ($run git checkout $x && $run git pull --ff-only || return 2)
+     ($run git checkout $x && $run git pull --ff-only || exit 2)
   done
 
   [ ${#currentBranch} -gt 0 ] && $run git checkout "$currentBranch" >/dev/null

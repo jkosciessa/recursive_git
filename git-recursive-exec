@@ -3,6 +3,12 @@
 # Description:
 #    execute commands recursively in all git repository folders
 #
+# Usage:
+#    git recursive-exec [-n|--dryrun] <command>
+#
+# Example
+#   git recursive-exec open -a SourceTree . # open SourceTree for each repo folder
+#
 git_recursive() {	
   local dir run
 
