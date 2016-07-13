@@ -8,21 +8,22 @@
 #   mkdir -p ~/bin/git >/dev/null && curl -o ~/bin/git/git-pull-recursive -fsSL https://gist.githubusercontent.com/eeichinger/1044107a1126901249b1164dac2fce15/raw/git-pull-recursive && echo '\nNow ensure ~/bin/git is added to your path!'
 #
 # Usage:
-#   git pull-recursive
+#   git pull-recursive [-s|--sourcetree]
 
-git_pull_recursive() {
-  local dir
+git_pull_recursive() {	
+  local dir opensourcetree
+	opensourcetree=echo
+  [[ "$1" = "-s" || "$1" = "--sourcetree" ]] && shift && opensourcetree='open -a SourceTree .'
   for f in */.git/; do
     if [[ -d "$f" && ! -L "$f" ]]; then
       dir=$(dirname $f)
       echo ">>> Updating repository folder './$dir'"
-
-      # 1. stash away all changes
+      # 1. stash away all pending changes
       # 2. prune obsolete tracking branches
       # 3. git pull on all tracking branches 
       # 4. pop back all changes
-      # 5. open sourcetree
-      (pushd $dir; git add -A :/; git stash save before_pull; git remote update --prune; git pull-all; git stash pop before_pull 2>/dev/null; open -a SourceTree .; )
+      # 5. open sourcetree      
+      (pushd $dir; old_stash=$(git rev-parse -q --verify refs/stash); git stash save -q -u 'before pull'; new_stash=$(git rev-parse -q --verify refs/stash); git remote update --prune; git pull-all; if [ "$old_stash" != "$new_stash" ]; then git stash pop; fi; bash -c "$opensourcetree"; )
     fi
   done
 }
