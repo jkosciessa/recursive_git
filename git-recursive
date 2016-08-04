@@ -13,15 +13,18 @@ git_recursive() {
   local dir run
 
   [[ "$1" = "-n" || "$1" = "--dryrun" ]] && shift && run=echo
+
+  DIRS=$(find . -type d -name '.git')
 	
-  for f in */.git/; do
+  for f in $DIRS; do
     if [[ -d "$f" && ! -L "$f" ]]; then
-      dir=$(dirname $f)
-      echo ">>> Executing Repository folder './$dir'"
-      (pushd $dir 1>/dev/null; $run git "$@" || exit 2)
+      dir=$f # $(dirname $f)
+      echo ">>> Executing Repository folder '$dir'"
+      (pushd $dir 1>/dev/null; $run git --no-pager "$@" || exit 2)
       res=$?
       if [ "$res" -gt 0 ] ; then
-        exit $res; 
+	echo "Error: $res"
+        #exit $res; 
       fi
     fi
   done
