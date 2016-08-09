@@ -18,7 +18,7 @@ git_recursive() {
 	
   for f in $DIRS; do
     if [[ -d "$f" && ! -L "$f" ]]; then
-      dir=$f # $(dirname $f)
+      dir=$(dirname $f)
       echo ">>> Executing Repository folder '$dir'"
       (pushd $dir 1>/dev/null; $run git --no-pager "$@" || exit 2)
       res=$?
